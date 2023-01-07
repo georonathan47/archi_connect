@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:archi_connect/core/components/colors.dart';
-import 'package:archi_connect/features/Designs/presentation/pages/Designs.dart';
-import 'package:archi_connect/features/signup/presentation/pages/MoreScreen.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
+import 'core/components/colors.dart';
 import 'features/Architects/presentation/pages/Architects2.dart';
 import 'features/Dashboard/presentation/pages/Dashboard.dart';
+import 'features/Designs/presentation/pages/Designs.dart';
+import 'features/signup/presentation/pages/MoreScreen.dart';
 
 class Index extends StatefulWidget {
   const Index({Key? key}) : super(key: key);
@@ -42,55 +44,44 @@ class _IndexState extends State<Index> {
     }
   }
 
-  BottomNavigationBar buildBottomNavigationBar() {
-    return BottomNavigationBar(
+  SalomonBottomBar buildBottomNavigationBar() {
+    return SalomonBottomBar(
       // backgroundColor: BACKGROUND_COLOR,
+      currentIndex: _selectedIndex,
       selectedItemColor: LABEL_COLOR,
       unselectedItemColor: Colors.black54,
-      selectedFontSize: 12,
-      unselectedFontSize: 10,
-      currentIndex: _selectedIndex,
-      type: BottomNavigationBarType.fixed,
       onTap: (index) {
         setState(() {
           _selectedIndex = index;
         });
       },
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.dashboard,
-            size: 20,
-          ),
-          label: 'Dashboard',
+      items: [
+        /// Home
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.dashboard_outlined),
+          activeIcon: const Icon(Icons.dashboard),
+          title: const Text('Dashboard'),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.design_services,
-            size: 20,
-          ),
-          label: 'Designs',
+
+        /// Likes
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.design_services_outlined),
+          activeIcon: const Icon(Icons.design_services),
+          title: const Text('Designs'),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.architecture_outlined,
-            size: 20,
-          ),
-          label: 'Architects',
+
+        /// Search
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.architecture_outlined),
+          activeIcon: const Icon(Icons.architecture),
+          title: const Text('Architects'),
         ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(
-        //     Icons.more_horiz_rounded,
-        //     size: 20,
-        //   ),
-        //   label: 'More',
-        // ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.person,
-            size: 20,
-          ),
-          label: 'Account',
+
+        /// Profile
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.person_outline),
+          activeIcon: const Icon(Icons.person),
+          title: const Text('Account'),
         ),
       ],
     );

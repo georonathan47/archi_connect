@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'Index.dart';
 import 'core/components/colors.dart';
+import 'features/login/presentation/pages/login_page.dart';
+import 'features/signup/presentation/pages/signup_page.dart';
 
 class SplashScreen2 extends StatefulWidget {
   const SplashScreen2({Key? key}) : super(key: key);
@@ -13,8 +15,7 @@ class SplashScreen2 extends StatefulWidget {
   _SplashScreen2State createState() => _SplashScreen2State();
 }
 
-class _SplashScreen2State extends State<SplashScreen2>
-    with TickerProviderStateMixin {
+class _SplashScreen2State extends State<SplashScreen2> with TickerProviderStateMixin {
   double _fontSize = 2;
   double _containerSize = 1.5;
   double _textOpacity = 0.0;
@@ -27,11 +28,10 @@ class _SplashScreen2State extends State<SplashScreen2>
   void initState() {
     super.initState();
 
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 3));
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 3));
 
-    animation1 = Tween<double>(begin: 40, end: 20).animate(CurvedAnimation(
-        parent: _controller!, curve: Curves.fastLinearToSlowEaseIn))
+    animation1 = Tween<double>(begin: 40, end: 20)
+        .animate(CurvedAnimation(parent: _controller!, curve: Curves.fastLinearToSlowEaseIn))
       ..addListener(() {
         setState(() {
           _textOpacity = 1.0;
@@ -58,7 +58,9 @@ class _SplashScreen2State extends State<SplashScreen2>
         Navigator.pushReplacement(
           context,
           PageTransition(
-            Index(),
+            // Index(),
+            // Login(),
+            SignUp(),
           ),
         );
       });
@@ -151,6 +153,14 @@ Future<void> goToHome(BuildContext context) async {
   Navigator.of(context).pushReplacement(
     MaterialPageRoute(
       builder: (context) => Index(),
+    ),
+  );
+}
+
+Future<void> goToLogin(BuildContext context) async {
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(
+      builder: (context) => Login(),
     ),
   );
 }

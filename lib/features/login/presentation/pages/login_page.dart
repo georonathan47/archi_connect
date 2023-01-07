@@ -1,242 +1,215 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:toast/toast.dart';
 
-import '../../../../core/shared/loading.dart';
-import '../../../../core/usecases/auth_service.dart';
-// import 'package:seven_columns/features/home/presentation/pages/homepage_main.dart';
+import '../../../../Index.dart';
+import '../../../../core/components/colors.dart';
+import '../../../../core/components/widgetFunctions.dart';
 
 class Login extends StatefulWidget {
-  final Function toggleView;
-  const Login({Key? key, required this.toggleView}) : super(key: key);
+  const Login({super.key});
 
   @override
-  _LoginState createState() => _LoginState();
+  State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final AuthService _auth = AuthService();
-  bool loading = false;
-  final _formkey = GlobalKey<FormState>();
-  String email = "";
-  String password = "";
-  String error = "";
-
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool showPassword = false;
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? Loading()
-        : Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
-              backgroundColor: Colors.amberAccent,
-              elevation: 1.5,
-              title: Text(
-                'Login Page',
-                style: GoogleFonts.mcLaren(
-                  textStyle: TextStyle(
-                    letterSpacing: 1.5,
-                    //color: Colors.white,
-                  ),
-                ),
-              ),
-              actions: <Widget>[
-                TextButton.icon(
-                  icon: Icon(
-                    Icons.person,
-                    color: Colors.black,
-                  ),
-                  label: Text(
-                    'Sign Up',
-                    style: GoogleFonts.mcLaren(
-                      textStyle: TextStyle(
-                        fontSize: 18,
-                        letterSpacing: 1,
-                        color: Colors.black,
+    return Scaffold(
+      backgroundColor: const Color(0xFFF3F3F3),
+      body: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 80),
+            child: Form(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(top: 5, left: 35, right: 35),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Log',
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                            fontSize: 40,
+                          ),
+                        ),
+                        addHorizontal(2.5),
+                        Text(
+                          'In',
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w700,
+                            color: GOLD,
+                            fontSize: 40,
+                          ),
+                        ),
+                      ],
+                    ),
+                    addVertical(7.5),
+                    Text(
+                      'Enter credentials to continue!',
+                      style: GoogleFonts.lato(
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black54,
+                        fontSize: 20,
                       ),
                     ),
-                  ),
-                  onPressed: () {
-                    widget.toggleView();
-                  },
-                ),
-              ],
-            ),
-            body: Container(
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Form(
-                        key: _formkey,
-                        child: Theme(
-                          data: ThemeData(
-                            brightness: Brightness.dark,
-                            primarySwatch: Colors.amber,
-                            inputDecorationTheme: InputDecorationTheme(
-                              labelStyle: TextStyle(
-                                color: Colors.amberAccent,
-                                fontSize: 20.0,
-                              ),
-                            ),
+                    addVertical(MediaQuery.of(context).size.height * 0.075),
+                    buildTextField(
+                      'Phone Number',
+                      'Eg: 0200000000',
+                      false,
+                      false,
+                      phoneController,
+                      isContact: true,
+                    ),
+                    addVertical(10),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1.5, left: 5, right: 5, bottom: 7.5),
+                      child: TextFormField(
+                        obscureText: !showPassword,
+                        controller: passwordController,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.lock_outline_rounded,
+                            color: BACKGROUND_COLOR2,
+                            size: 20,
                           ),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "Welcome To Our Platform",
-                                style: GoogleFonts.mcLaren(
-                                  textStyle: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white54,
-                                    letterSpacing: 1.5,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showPassword = !showPassword;
+                              });
+                            },
+                            icon: showPassword == false
+                                ? Icon(
+                                    Icons.remove_red_eye,
+                                    color: Colors.teal[400],
+                                  )
+                                : Icon(
+                                    Icons.remove_red_eye_outlined,
+                                    color: Colors.red[400],
                                   ),
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(50.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    TextFormField(
-                                      validator: (val) => val!.isEmpty
-                                          ? 'Enter a registered email address'
-                                          : null,
-                                      decoration: InputDecoration(
-                                        hintText: 'Enter a valid email',
-                                        labelText: 'Enter email',
-                                      ),
-                                      keyboardType: TextInputType.emailAddress,
-                                      onChanged: (val) {},
-                                    ),
-                                    SizedBox(height: 15),
-                                    TextFormField(
-                                      validator: (val) => val!.length < 8
-                                          ? 'Invaild Password, please try again'
-                                          : null,
-                                      decoration: InputDecoration(
-                                        hintText: 'Password',
-                                        labelText: 'Enter pasword',
-                                      ),
-                                      keyboardType: TextInputType.text,
-                                      onChanged: (val) {},
-                                      obscureText: true,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 20.0),
-                                    ),
-                                    SizedBox(height: 15),
-                                    Text(
-                                      '\t\t\t\tLogin to your account, OR \nSign Up to create a new account',
-                                      style: GoogleFonts.mcLaren(
-                                        textStyle: TextStyle(
-                                          color: Colors.amber[500],
-                                          letterSpacing: 2.5,
-                                        ),
-                                      ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        //! Signup button
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(25),
-                                            ),
-                                            //onPrimary: Colors.amber[300],
-                                          ),
-                                          child: Text(
-                                            'Sign Up',
-                                            style: GoogleFonts.mcLaren(
-                                              textStyle: TextStyle(
-                                                letterSpacing: 2.2,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            widget.toggleView();
-                                          },
-                                        ),
-                                        //! Login button
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(25),
-                                            ),
-                                            primary: Colors.amber[300],
-                                          ),
-                                          child: Text(
-                                            'Login',
-                                            style: GoogleFonts.mcLaren(
-                                              textStyle: TextStyle(
-                                                letterSpacing: 2.2,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          onPressed: () async {
-                                            if (_formkey.currentState!
-                                                .validate()) {
-                                              setState(() => loading = true);
-                                              // dynamic result = await _auth
-                                              //     .signInWithEmailandPassword(
-                                              //         email, password);
-                                              // if (result == null) {
-                                              //   setState(() {
-                                              //     loading = false;
-                                              //     error =
-                                              //         'Invalid email and/or password \n Please enter valid credentials';
-                                              //   });
-                                              //   Toast.show(
-                                              //     "Invalid User Credentials",
-                                              //     duration: Toast.lengthLong,
-                                              //     gravity: Toast.bottom,
-                                              //   );
-                                              // } else {
-                                              //   Toast.show(
-                                              //     "Account created for " +
-                                              //         email,
-                                              //     duration: Toast.lengthLong,
-                                              //     gravity: Toast.bottom,
-                                              //   );
-                                              // }
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 45,
-                                    ),
-                                    Text(
-                                      error,
-                                      style: GoogleFonts.mcLaren(
-                                        textStyle: TextStyle(
-                                          color: Colors.red[500],
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          ),
+                          contentPadding: const EdgeInsets.only(left: 15),
+                          labelText: 'Password',
+                          hintText: '***********',
+                          hintStyle: GoogleFonts.raleway(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black54,
+                          ),
+                          labelStyle: GoogleFonts.raleway(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                            letterSpacing: .25,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black54, width: 0.5),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.black, width: 1),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    addVertical(30),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (phoneController.text.isEmpty && passwordController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Please enter your credentials!',
+                                style: GoogleFonts.raleway(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              backgroundColor: Colors.red[200],
+                            ),
+                          );
+                        } else if (passwordController.text == '') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Please enter your password!',
+                                style: GoogleFonts.raleway(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              backgroundColor: Colors.red[200],
+                            ),
+                          );
+                        } else if (phoneController.text.length < 10) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Please make sure your phone number is exactly 10 digits!',
+                                style: GoogleFonts.raleway(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              backgroundColor: Colors.red[200],
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'You have successfully logged in!',
+                                style: GoogleFonts.raleway(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              backgroundColor: Colors.teal[200],
+                            ),
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Index(),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: GOLD,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: Text(
+                        'Log In',
+                        style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          );
+          ),
+        ),
+      ),
+    );
   }
 }

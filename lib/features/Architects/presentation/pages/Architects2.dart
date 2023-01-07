@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:archi_connect/features/Dashboard/presentation/widgets/DashCards.dart';
-import 'package:archi_connect/core/components/colors.dart';
 
+import '../../../../core/components/colors.dart';
 import '../../../../core/components/widgetFunctions.dart';
 import '../widgets/ArchCard.dart';
 import 'ArchitectDetails.dart';

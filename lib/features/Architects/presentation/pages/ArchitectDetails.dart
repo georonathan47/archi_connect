@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
-import 'package:archi_connect/core/components/colors.dart';
-import 'package:archi_connect/core/components/widgetFunctions.dart';
-import 'package:archi_connect/features/Architects/presentation/widgets/ArchProjects.dart';
+
+import '../../../../core/components/colors.dart';
+import '../../../../core/components/widgetFunctions.dart';
+import '../widgets/ArchProjects.dart';
 
 class ArchitectDetails extends StatefulWidget {
   final String name, image, experience, phoneNumber;
@@ -132,6 +132,7 @@ class _ArchitectDetailsState extends State<ArchitectDetails> {
                           starOffColor: const Color(0xffe7e8ea),
                           starColor: Colors.amber,
                         ),
+
                       ],
                     ),
                   ),
@@ -226,23 +227,42 @@ class _ArchitectDetailsState extends State<ArchitectDetails> {
                     ),
                     addVertical(20),
                     Center(
-                      child: SmoothStarRating(
-                        allowHalfRating: true,
-                        onRated: (v) {
+                      child: RatingStars(
+                        value: newRate,
+                        onValueChanged: (v) {
+                          //
                           setState(() {
                             newRate = v;
                           });
                         },
+                        starBuilder: (index, color) => Icon(
+                          Icons.star,
+                          color: color,
+                        ),
                         starCount: 5,
-                        rating: 0,
-                        size: 45.0,
-                        isReadOnly: false,
-                        filledIconData: Icons.star_outlined,
-                        halfFilledIconData: Icons.star_half_outlined,
-                        color: Colors.amber[300],
-                        borderColor: Colors.teal[200],
-                        spacing: 10.0,
+                        starSize: 20,
+                        valueLabelColor: const Color(0xff9b9b9b),
+                        valueLabelTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12.0,
+                        ),
+                        valueLabelRadius: 10,
+                        maxValue: 5,
+                        starSpacing: 2,
+                        maxValueVisibility: true,
+                        valueLabelVisibility: true,
+                        animationDuration: const Duration(milliseconds: 1000),
+                        valueLabelPadding: const EdgeInsets.symmetric(
+                          vertical: 1,
+                          horizontal: 8,
+                        ),
+                        valueLabelMargin: const EdgeInsets.only(right: 8),
+                        starOffColor: const Color(0xffe7e8ea),
+                        starColor: Colors.amber,
                       ),
+
                     ),
                     addVertical(25),
                     Text(

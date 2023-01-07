@@ -1,12 +1,13 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:archi_connect/core/utils/Utility.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../../core/components/colors.dart';
 import '../../../../../../../core/components/widgetFunctions.dart';
 import '../../../../core/utils/.env.dart';
+import '../../../../core/utils/Utility.dart';
+import '../../../login/presentation/pages/login_page.dart';
 import '../../../settings/presentation/pages/edit_profile.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -348,8 +349,18 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
                   message:
                       'Logging out will clear any unsaved data and the current user session.\nAre you sure you want to log out?',
                   context: context,
-                  onNo: () {},
-                  onYes: () => Navigator.pop(context),
+                  onNo: () {
+                    Navigator.pop(context);
+                  },
+                  onYes: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Login(),
+                      ),
+                    );
+                  },
                   yesButtonColor: Colors.teal[300]!,
                   noButtonColor: Colors.red[300]!,
                 );

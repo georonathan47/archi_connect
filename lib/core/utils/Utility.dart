@@ -1,8 +1,9 @@
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:archi_connect/core/components/colors.dart';
-import 'package:archi_connect/core/components/widgetFunctions.dart';
+
+import '../components/colors.dart';
+import '../components/widgetFunctions.dart';
 
 class UtilityService {
   void showMessage({String? message, Icon? icon, BuildContext? context}) async {
@@ -15,7 +16,7 @@ class UtilityService {
           position: FlashPosition.bottom,
           child: FlashBar(
             icon: icon,
-            message: Text(
+            content: Text(
               message!,
               style: const TextStyle(color: Colors.black),
             ),
@@ -278,7 +279,9 @@ class UtilityService {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () => onYes,
+                            onTap: () {
+                              onYes;
+                            },
                             child: Container(
                               height: buttonHeight ?? 35,
                               width: buttonWidth ?? 64,
@@ -308,7 +311,9 @@ class UtilityService {
                           ),
                           const SizedBox(width: 10),
                           GestureDetector(
-                            onTap: () => onNo,
+                            onTap: () {
+                              onNo;
+                            },
                             child: Container(
                               height: 35,
                               width: 64,
