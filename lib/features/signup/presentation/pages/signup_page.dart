@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 
 import '../../../../Index.dart';
 import '../../../../core/components/colors.dart';
 import '../../../../core/components/widgetFunctions.dart';
+import '../../../../core/shared/ConfigReader.dart';
+import '../../../../main.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -136,25 +141,22 @@ class _SignUpState extends State<SignUp> {
                               backgroundColor: Colors.red[200],
                             ),
                           );
-                        } else {
+                        } else if (passwordController.text != confPassController.text) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'You have successfully logged in!',
+                                'Your passwords do not match...',
                                 style: GoogleFonts.raleway(
                                   fontSize: 16,
                                   color: Colors.black,
                                 ),
                               ),
-                              backgroundColor: Colors.teal[200],
+                              backgroundColor: Colors.red[200],
                             ),
                           );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Index(),
-                            ),
-                          );
+                        } else {
+                          final config = await AppConfig.forEnvironment(envVar);
+                          await proceed(config, context);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -182,6 +184,56 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  Future<void> proceed(AppConfig config, BuildContext context) async {
+    Response result = await post(
+      Uri.parse(config.registerUrl!),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+      },
+      body: jsonEncode({
+        "email": emailController.text.trim(),
+        "fullName": fullNameController.text.trim(),
+        "password": passwordController.text.trim(),
+        "phone": phoneController.text.trim(),
+      }),
+    );
+    print('StatusCode: ${result.statusCode}');
+    if (result.statusCode >= 200 && result.statusCode < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'You have successfully created your account!',
+            style: GoogleFonts.raleway(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+          backgroundColor: Colors.teal[200],
+        ),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Index(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '😥${result.statusCode} Something wrong occured!',
+            style: GoogleFonts.raleway(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+          backgroundColor: Colors.red[300],
+        ),
+      );
+    }
   }
 
   Padding passwordTextField(

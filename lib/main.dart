@@ -2,15 +2,38 @@
 import 'package:archi_connect/splash.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() async {
+import 'core/shared/ConfigReader.dart';
+
+dynamic envVar;
+void main({String? env}) async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  env ??= "dev";
+  final config = await AppConfig.forEnvironment(env);
+  envVar = config.env;
+  print('Running in $envVar mode');
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AppConfig(
+            env: config.env,
+            baseUrl: config.baseUrl,
+            registerUrl: config.registerUrl,
+            version: config.version,
+          ),
+        ),
+      ],
+      child: MyApp(config: config),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final AppConfig config;
+  const MyApp({Key? key, required this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
