@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,14 +9,15 @@ import '../../../../core/components/widgetFunctions.dart';
 import '../widgets/ArchProjects.dart';
 
 class ArchitectDetails extends StatefulWidget {
-  final String name, image, experience, phoneNumber;
+  final String name, phoneNumber, image;
+  final int experience;
   double rating;
   ArchitectDetails({
     Key? key,
     required this.name,
-    required this.image,
     required this.experience,
     required this.rating,
+    required this.image,
     required this.phoneNumber,
   }) : super(key: key);
 
@@ -78,7 +81,7 @@ class _ArchitectDetailsState extends State<ArchitectDetails> {
                         ),
                         addVertical(20),
                         Text(
-                          'Experience: ${widget.experience}',
+                          'Experience: ${widget.experience} years',
                           style: GoogleFonts.raleway(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -262,7 +265,6 @@ class _ArchitectDetailsState extends State<ArchitectDetails> {
                         starOffColor: const Color(0xffe7e8ea),
                         starColor: Colors.amber,
                       ),
-
                     ),
                     addVertical(25),
                     Text(

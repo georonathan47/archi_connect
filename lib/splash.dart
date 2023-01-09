@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'Index.dart';
 import 'core/components/colors.dart';
 import 'features/login/presentation/pages/login_page.dart';
-import 'features/signup/presentation/pages/signup_page.dart';
 
 class SplashScreen2 extends StatefulWidget {
   const SplashScreen2({Key? key}) : super(key: key);
@@ -58,9 +57,8 @@ class _SplashScreen2State extends State<SplashScreen2> with TickerProviderStateM
         Navigator.pushReplacement(
           context,
           PageTransition(
-            // Index(),
-            // Login(),
-            SignUp(),
+            Index(),
+            // SignUp(),
           ),
         );
       });

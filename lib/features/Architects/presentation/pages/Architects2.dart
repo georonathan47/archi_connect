@@ -8,7 +8,8 @@ import '../widgets/ArchCard.dart';
 import 'ArchitectDetails.dart';
 
 class Architects2 extends StatefulWidget {
-  const Architects2({Key? key}) : super(key: key);
+  final dynamic architects;
+  const Architects2({Key? key, this.architects}) : super(key: key);
 
   @override
   _Architects2State createState() => _Architects2State();
@@ -17,6 +18,7 @@ class Architects2 extends StatefulWidget {
 class _Architects2State extends State<Architects2> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Animation<double>? _animation;
+  // final List<dynamic> _architects = architects;
 
   @override
   void initState() {
@@ -43,112 +45,14 @@ class _Architects2State extends State<Architects2> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> _architects = [
-      {
-        'name': 'Jonathan George',
-        'image': 'https://randomuser.me/api/portraits/men/9.jpg',
-        'experience': '5 years',
-        "projects": [],
-        "rating": 3.8,
-        "phoneNumber": '+2330559739718'
-      },
-      {
-        'name': 'archi_connect Awarika',
-        'image': 'https://randomuser.me/api/portraits/men/4.jpg',
-        'experience': '3 years',
-        "projects": [],
-        "rating": 4.1,
-        "phoneNumber": '+2330559739718'
-      },
-      {
-        'name': 'Victor Valdes',
-        'image': 'https://randomuser.me/api/portraits/men/5.jpg',
-        'experience': '2 years',
-        "projects": [],
-        "rating": 3.5,
-        "phoneNumber": '+2330559739718'
-      },
-      {
-        'name': 'Victor Torkutsah',
-        'image': 'https://randomuser.me/api/portraits/men/13.jpg',
-        'experience': '4 years',
-        "projects": [],
-        "rating": 3.5,
-        "phoneNumber": '+2330559739718'
-      },
-      {
-        'name': 'Christiana Dzokotoe',
-        'image': 'https://randomuser.me/api/portraits/women/15.jpg',
-        'experience': '5 years',
-        "projects": [],
-        "rating": 4.7,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Jonathan George',
-        'image': 'https://randomuser.me/api/portraits/men/8.jpg',
-        'experience': '7 years',
-        "projects": [],
-        "rating": 2.5,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Jonathan George',
-        'image': 'https://randomuser.me/api/portraits/men/19.jpg',
-        'experience': '5 years',
-        "projects": [],
-        "rating": 4.3,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Jonathan George',
-        'image': 'https://randomuser.me/api/portraits/men/14.jpg',
-        'experience': '5 years',
-        "projects": [],
-        "rating": 4.1,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Jonathan George',
-        'image': 'https://randomuser.me/api/portraits/men/47.jpg',
-        'experience': '5 years',
-        "projects": [],
-        "rating": 3.8,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Victor Torkutsah',
-        'image': 'https://randomuser.me/api/portraits/men/33.jpg',
-        'experience': '4 years',
-        "projects": [],
-        "rating": 4.3,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Christiana Dzokotoe',
-        'image': 'https://randomuser.me/api/portraits/women/49.jpg',
-        'experience': '5 years',
-        "projects": [],
-        "rating": 4.0,
-        "phoneNumber": '+233 559739718'
-      },
-      {
-        'name': 'Jonathan George',
-        'image': 'https://randomuser.me/api/portraits/men/49.jpg',
-        'experience': '7 years',
-        "projects": [],
-        "rating": 4.4,
-        "phoneNumber": '+233 559739718'
-      },
-    ];
+    final List<dynamic> _architects = widget.architects;
+
     return Scaffold(
       appBar: appBar(title: 'Architects', isDashboard: true, logo: 'assets/images/architects.png'),
       backgroundColor: const Color(0xffF5F5F5),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12.5),
-        decoration: const BoxDecoration(
-          color: BACKGROUND_COLOR,
-        ),
+        decoration: const BoxDecoration(color: BACKGROUND_COLOR),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -159,15 +63,15 @@ class _Architects2State extends State<Architects2> with SingleTickerProviderStat
               style: GoogleFonts.raleway(
                 fontWeight: FontWeight.w500,
                 color: LABEL_COLOR,
+                fontSize: 18,
               ),
             ),
             const Divider(thickness: .4, color: BLACK54),
             Expanded(
               child: AnimationLimiter(
                 child: GridView.builder(
-                  // scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: 12,
+                  itemCount: _architects.length,
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return GestureDetector(
@@ -176,26 +80,27 @@ class _Architects2State extends State<Architects2> with SingleTickerProviderStat
                           context,
                           MaterialPageRoute(
                             builder: (context) => ArchitectDetails(
-                              name: _architects[index]['name'],
-                              image: _architects[index]['image'],
-                              rating: _architects[index]["rating"],
+                              name: _architects[index]['fullName'],
+                              rating: _architects[index]["ratings"] ?? 0,
                               experience: _architects[index]['experience'],
-                              phoneNumber: _architects[index]['phoneNumber'],
+                              phoneNumber: _architects[index]['phone'],
+                              image: _architects[index]['image'] ?? "https://cdn-icons-png.flaticon.com/512/149/149071.png",
                             ),
                           ),
                         );
                       },
                       child: ArchCard(
-                        title: _architects[index]['name'],
-                        subtitle: "Experience: ${_architects[index]['experience']}",
-                        image: _architects[index]['image'],
+                        title: _architects[index]['fullName'],
+                        subtitle: "Experience: ${_architects[index]['experience']} years",
+                        rating: _architects[index]["ratings"] == null ? 0 : _architects[index]["ratings"].toDouble(),
+                        image: _architects[index]['image'] ?? "https://cdn-icons-png.flaticon.com/512/149/149071.png",
                       ),
                     );
                   },
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 0.9,
-                    crossAxisSpacing: 5,
+                    childAspectRatio: 0.775,
+                    crossAxisSpacing: 7.5,
                     mainAxisSpacing: 10,
                   ),
                 ),

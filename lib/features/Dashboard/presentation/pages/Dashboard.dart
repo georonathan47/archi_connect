@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:archi_connect/features/Dashboard/presentation/widgets/DashCards.dart';
-import 'package:archi_connect/features/Architects/presentation/pages/Architects2.dart';
-import 'package:archi_connect/features/Designs/presentation/pages/Designs.dart';
 
 import '../../../../core/components/colors.dart';
+import '../../../../core/components/progressDialod.dart';
 import '../../../../core/components/widgetFunctions.dart';
+import '../../../../core/shared/ConfigReader.dart';
+import '../../../../core/utils/NetworkUtility.dart';
+import '../../../../main.dart';
+import '../../../Architects/presentation/pages/Architects2.dart';
+import '../../../Designs/presentation/pages/Designs.dart';
+import '../widgets/DashCards.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -15,6 +22,9 @@ class Dashboard extends StatefulWidget {
   @override
   State<Dashboard> createState() => _DashboardState();
 }
+
+dynamic totalArchs;
+dynamic totalArchsData;
 
 class _DashboardState extends State<Dashboard> {
   @override
@@ -56,11 +66,11 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
                 child: PieChart(
-                  dataMap: const {
+                  dataMap: {
+                    'Architects': 3,
                     'Designs': 10,
-                    'Architects': 16,
-                    'Recently Viewed': 7,
                     'Liked Designs': 5,
+                    'Recently Viewed': 7,
                   },
                   animationDuration: const Duration(milliseconds: 1800),
                   chartLegendSpacing: 32,
@@ -105,17 +115,12 @@ class _DashboardState extends State<Dashboard> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Architects2(),
-                        ),
-                      ),
+                      onTap: () => openArchitects(context: context),
                       child: DashCard(
                         image: 'assets/images/architects.png',
                         gradientColor1: Colors.amber[100]!,
                         title: 'All Architects',
-                        subtitle: '16',
+                        subtitle: totalArchs == null ? "-" : totalArchs.toString(),
                       ),
                     ),
                   ), //? architects
@@ -161,21 +166,46 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ],
               ),
-              // addVertical(25),
-              // Text(
-              //   'Statistics',
-              //   style: GoogleFonts.lato(
-              //     fontSize: 16,
-              //     fontWeight: FontWeight.w500,
-              //     color: LABEL_COLOR,
-              //   ),
-              // ),
-              // const Divider(color: BLACK54, thickness: .45),
-              // addVertical(10),
             ],
           ),
         ),
       ),
     );
+  }
+
+  openArchitects({BuildContext? context}) async {
+    final config = await AppConfig.forEnvironment(envVar);
+
+    try {
+      showDialog(
+        context: context!,
+        builder: (context) {
+          return const ProgressDialog(displayMessage: ' Loading, please wait...');
+        },
+      );
+      NetworkUtility networkUtility = NetworkUtility();
+      Response? response = await networkUtility.getData(config.fetchAllArchitectsUrl!);
+
+      if (response!.statusCode == 200) {
+        //parse data received
+        var data = jsonDecode(response.body);
+        print('Decoded Info: $data');
+        setState(() {
+          totalArchs = data.length;
+          totalArchsData = data;
+        });
+        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Architects2(architects: data),
+          ),
+        );
+      } else {}
+    } catch (e, s) {
+      print('fetch property data error from search: $e\n Stacktrace: $s');
+
+      Navigator.of(context!, rootNavigator: true).pop();
+    }
   }
 }

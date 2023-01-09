@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:archi_connect/core/components/colors.dart';
-import 'package:archi_connect/core/components/widgetFunctions.dart';
+
+import '../../../../core/components/colors.dart';
+import '../../../../core/components/widgetFunctions.dart';
 
 class ArchCard extends StatelessWidget {
   // final Color gradientColor1;
   // final Color gradientColor2;
   final String title;
+  final double rating;
   final String image;
   // final String phone;
   final String subtitle;
   const ArchCard({
     Key? key,
     required this.title,
-    required this.image,
+    required this.rating,
     required this.subtitle,
-    // this.phone,
+    required this.image,
     // this.gradientColor1,
     // this.gradientColor2,
   }) : super(key: key);
@@ -23,7 +26,7 @@ class ArchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
+      height: MediaQuery.of(context).size.height * 0.575,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -41,18 +44,10 @@ class ArchCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            height: 110,
+            height: 120,
             width: 100,
             decoration: BoxDecoration(
-              // color: color ?? Colors.teal[300],
-              gradient: LinearGradient(
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft,
-                colors: [
-                  Colors.teal.shade100,
-                  Colors.teal.shade300,
-                ],
-              ),
+              color: Colors.transparent,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -63,13 +58,15 @@ class ArchCard extends StatelessWidget {
             ),
           ),
           addVertical(10),
-          Center(
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
             child: Text(
               title,
+              overflow: TextOverflow.fade,
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 16,
                 color: LABEL_COLOR,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -78,10 +75,42 @@ class ArchCard extends StatelessWidget {
             child: Text(
               subtitle,
               style: GoogleFonts.raleway(
-                fontSize: 16,
+                fontSize: 15,
                 color: LABEL_COLOR,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w400,
               ),
+            ),
+          ),
+          addVertical(5),
+          Center(
+            child: RatingStars(
+              value: rating,
+              starBuilder: (index, color) => Icon(
+                Icons.star,
+                color: color,
+              ),
+              starCount: 5,
+              starSize: 20,
+              valueLabelColor: const Color(0xff9b9b9b),
+              valueLabelTextStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                fontSize: 12.0,
+              ),
+              valueLabelRadius: 10,
+              maxValue: 5,
+              starSpacing: 2,
+              maxValueVisibility: true,
+              valueLabelVisibility: true,
+              animationDuration: const Duration(milliseconds: 1000),
+              valueLabelPadding: const EdgeInsets.symmetric(
+                vertical: 1,
+                horizontal: 8,
+              ),
+              valueLabelMargin: const EdgeInsets.only(right: 8),
+              starOffColor: const Color(0xffe7e8ea),
+              starColor: Colors.amber,
             ),
           ),
         ],

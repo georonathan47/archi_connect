@@ -9,12 +9,20 @@ class AppConfig extends ChangeNotifier {
     this.baseUrl,
     this.registerUrl,
     this.version,
+    this.fetchDetailsUrl,
+    this.getArchitectDetailsUrl,
+    this.fetchAllArchitectsUrl,
+    this.fetchAllArchitectsByRatingsUrl,
   });
 
   String? env;
   String? baseUrl;
   String? registerUrl;
   String? version;
+  String? fetchDetailsUrl;
+  String? getArchitectDetailsUrl;
+  String? fetchAllArchitectsUrl;
+  String? fetchAllArchitectsByRatingsUrl;
 
 
   static Future<AppConfig> forEnvironment(String env) async {
@@ -35,6 +43,10 @@ class AppConfig extends ChangeNotifier {
       baseUrl: json['baseUrl'],
       registerUrl: json['registerUrl'],
       version: json['version'],
+      fetchDetailsUrl: json['fetchDetailsUrl'],
+      getArchitectDetailsUrl: json['getArchitectDetailsUrl'],
+      fetchAllArchitectsUrl: json['fetchAllArchitectsUrl'],
+      fetchAllArchitectsByRatingsUrl: json['fetchAllArchitectsByRatingsUrl'],
     );
   }
 }

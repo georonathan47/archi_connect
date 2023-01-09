@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 
@@ -24,6 +25,7 @@ class _SignUpState extends State<SignUp> {
   final confPassController = TextEditingController();
   final fullNameController = TextEditingController();
   bool showPassword = false;
+  bool showPassword2 = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -200,6 +202,10 @@ class _SignUpState extends State<SignUp> {
         "phone": phoneController.text.trim(),
       }),
     );
+    await FlutterSecureStorage().write(
+      key: "phoneNumber",
+      value: phoneController.text.trim(),
+    );
     print('StatusCode: ${result.statusCode}');
     if (result.statusCode >= 200 && result.statusCode < 300) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -239,11 +245,12 @@ class _SignUpState extends State<SignUp> {
   Padding passwordTextField(
     TextEditingController controller, {
     String? label,
+    bool? show,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 1.5, left: 5, right: 5, bottom: 7.5),
       child: TextFormField(
-        obscureText: !showPassword,
+        obscureText: showPassword,
         controller: controller,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
@@ -255,9 +262,10 @@ class _SignUpState extends State<SignUp> {
             onPressed: () {
               setState(() {
                 showPassword = !showPassword;
+                showPassword2 = !showPassword2;
               });
             },
-            icon: showPassword == false
+            icon: showPassword == true
                 ? Icon(
                     Icons.remove_red_eye,
                     color: Colors.teal[400],

@@ -1,12 +1,15 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../../core/components/colors.dart';
 import '../../../../../../../core/components/widgetFunctions.dart';
-import '../../../../core/utils/.env.dart';
+import '../../../../core/shared/ConfigReader.dart';
 import '../../../../core/utils/Utility.dart';
+import '../../../../core/utils/apiMediator.dart';
+import '../../../../main.dart';
 import '../../../login/presentation/pages/login_page.dart';
 import '../../../settings/presentation/pages/edit_profile.dart';
 
@@ -22,6 +25,10 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
   final Duration _duration = const Duration(milliseconds: 370);
   Animation<Alignment>? _animation;
   AnimationController? _animationController;
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  String? phone = "";
+  String? accountHolder = "";
+  String? version = "";
 
   @override
   void initState() {
@@ -34,19 +41,34 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
         reverseCurve: Curves.easeIn,
       ),
     );
+    initUser();
   }
+
+  initUser() async {
+    final config = await AppConfig.forEnvironment(envVar);
+    version = config.version;
+    phone = await storage.read(key: "phoneNumber");
+    print('number: $phone');
+    ApiMediator().fetchUserDetails(phone!).then((value) {
+      setState(() {
+        accountHolder = value['fullName'];
+      });
+      print('object: $accountHolder');
+    });
+  }
+
+  Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    'Accept': '*/*',
+  };
 
   @override
   Widget build(BuildContext context) {
-    const phone = '0201154679';
-    const accountHolder = 'David Bateson';
     return Scaffold(
       appBar: appBar(title: 'Account', isDashboard: true, logo: 'assets/images/eiffel-tower.png'),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        decoration: const BoxDecoration(
-          color: BACKGROUND_COLOR,
-        ),
+        decoration: const BoxDecoration(color: BACKGROUND_COLOR),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,14 +122,23 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
                           Text(
                             'This account belongs to:',
                             style: GoogleFonts.lato(
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w700,
                               letterSpacing: .35,
-                              fontSize: 14,
+                              fontSize: 18,
                             ),
                           ),
                           addVertical(10),
                           Text(
-                            accountHolder,
+                            accountHolder!,
+                            style: GoogleFonts.raleway(
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: .75,
+                              fontSize: 16,
+                            ),
+                          ),
+                          addVertical(5),
+                          Text(
+                            phone!,
                             style: GoogleFonts.raleway(
                               fontWeight: FontWeight.w600,
                               letterSpacing: .75,
@@ -158,7 +189,7 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
                         context,
                         MaterialPageRoute(
                           builder: (context) => Profile(
-                            name: accountHolder,
+                            name: accountHolder!,
                           ),
                         ),
                       );
@@ -200,31 +231,10 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
                     ),
                   ),
                   addVertical(15),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'About App',
-                          style: GoogleFonts.lato(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: .5,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          'Version $VERSION',
-                          style: GoogleFonts.raleway(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  addVertical(15),
+
                   GestureDetector(
                     onTap: () {
-                      _makePhoneCall(phone);
+                      _makePhoneCall(phone!);
                     },
                     child: Container(
                       decoration: const BoxDecoration(),
@@ -327,7 +337,6 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
                 ],
               ),
             ),
-
             addVertical(20),
             Text(
               'User Session',
@@ -403,7 +412,7 @@ class _AccountScreenState extends State<AccountScreen> with TickerProviderStateM
             addVertical(20),
             Center(
               child: Text(
-                'Version: $VERSION',
+                version!.isEmpty ? '-' : 'Version: $version',
                 style: GoogleFonts.raleway(),
               ),
             ),
