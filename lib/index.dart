@@ -9,7 +9,7 @@ import 'core/components/progressDialod.dart';
 import 'core/shared/ConfigReader.dart';
 import 'core/utils/NetworkUtility.dart';
 import 'core/utils/apiMediator.dart';
-import 'features/Architects/presentation/pages/Architects2.dart';
+import 'features/Architects/presentation/pages/ArchitectsScreen.dart';
 import 'features/Dashboard/presentation/pages/Dashboard.dart';
 import 'features/Designs/presentation/pages/Designs.dart';
 import 'features/signup/presentation/pages/MoreScreen.dart';
@@ -58,7 +58,7 @@ class _IndexState extends State<Index> {
         return Architects2(architects: architects ?? []);
       } catch (err) {
         print(err);
-        
+
       }
       return Architects2(architects: architects ?? []);
     } else {

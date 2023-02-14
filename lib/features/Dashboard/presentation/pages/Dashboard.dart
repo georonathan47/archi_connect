@@ -12,7 +12,7 @@ import '../../../../core/components/widgetFunctions.dart';
 import '../../../../core/shared/ConfigReader.dart';
 import '../../../../core/utils/NetworkUtility.dart';
 import '../../../../main.dart';
-import '../../../Architects/presentation/pages/Architects2.dart';
+import '../../../Architects/presentation/pages/ArchitectsScreen.dart';
 import '../../../Designs/presentation/pages/Designs.dart';
 import '../widgets/DashCards.dart';
 

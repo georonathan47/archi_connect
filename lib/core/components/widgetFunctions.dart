@@ -89,28 +89,23 @@ Widget buildTextField(
                   color: Colors.red[200],
                 ),
               )
-            : null, // * This makes the icon appear only for the password field
+            : null,
         contentPadding: const EdgeInsets.only(left: 15),
         labelText: labelText,
         // floatingLabelBehavior: FloatingLabelBehavior.always,
         hintText: placeholder,
-        hintStyle: GoogleFonts.raleway(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: Colors.black54,
-        ),
+        hintStyle: GoogleFonts.raleway(fontSize: 16, fontWeight: FontWeight.w500),
         labelStyle: GoogleFonts.raleway(
           fontSize: 16,
           fontWeight: FontWeight.w400,
-          color: Colors.black,
           letterSpacing: .25,
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black54, width: 0.5),
+          borderSide: const BorderSide(width: 0.5),
           borderRadius: BorderRadius.circular(15),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black, width: 1),
+          borderSide: const BorderSide(width: 1),
           borderRadius: BorderRadius.circular(20),
         ),
       ),

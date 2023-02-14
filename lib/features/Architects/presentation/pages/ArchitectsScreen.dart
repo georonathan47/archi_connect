@@ -4,12 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/components/colors.dart';
 import '../../../../core/components/widgetFunctions.dart';
+import '../../../../core/utils/apiMediator.dart';
 import '../widgets/ArchCard.dart';
 import 'ArchitectDetails.dart';
 
 class Architects2 extends StatefulWidget {
-  final dynamic architects;
-  const Architects2({Key? key, this.architects}) : super(key: key);
+  dynamic architects;
+  Architects2({Key? key, this.architects}) : super(key: key);
 
   @override
   _Architects2State createState() => _Architects2State();
@@ -23,6 +24,7 @@ class _Architects2State extends State<Architects2> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
+    tryFetch();
 
     _controller = AnimationController(
       vsync: this,
@@ -41,6 +43,19 @@ class _Architects2State extends State<Architects2> with SingleTickerProviderStat
   void dispose() {
     _controller!.dispose();
     super.dispose();
+    tryFetch();
+  }
+
+  tryFetch() async {
+    try {
+      ApiMediator().fetchAllArchitects().then((value) {
+        setState(() {
+          widget.architects = value;
+        });
+      });
+    } catch (err) {
+      debugPrint(err.toString());
+    }
   }
 
   @override
@@ -67,6 +82,9 @@ class _Architects2State extends State<Architects2> with SingleTickerProviderStat
               ),
             ),
             const Divider(thickness: .4, color: BLACK54),
+            // arhitects == null
+            //     ? Text('No Architects Found')
+            //     :
             Expanded(
               child: AnimationLimiter(
                 child: GridView.builder(

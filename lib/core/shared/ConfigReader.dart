@@ -13,6 +13,7 @@ class AppConfig extends ChangeNotifier {
     this.getArchitectDetailsUrl,
     this.fetchAllArchitectsUrl,
     this.fetchAllArchitectsByRatingsUrl,
+    this.fetchAllDesignsUrl
   });
 
   String? env;
@@ -23,6 +24,7 @@ class AppConfig extends ChangeNotifier {
   String? getArchitectDetailsUrl;
   String? fetchAllArchitectsUrl;
   String? fetchAllArchitectsByRatingsUrl;
+  String? fetchAllDesignsUrl;
 
 
   static Future<AppConfig> forEnvironment(String env) async {
@@ -47,6 +49,7 @@ class AppConfig extends ChangeNotifier {
       getArchitectDetailsUrl: json['getArchitectDetailsUrl'],
       fetchAllArchitectsUrl: json['fetchAllArchitectsUrl'],
       fetchAllArchitectsByRatingsUrl: json['fetchAllArchitectsByRatingsUrl'],
+      fetchAllDesignsUrl: json['fetchAllDesignsUrl'],
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 
 import '../../../../Index.dart';
 import '../../../../core/components/colors.dart';
+import '../../../../core/components/progressDialod.dart';
 import '../../../../core/components/widgetFunctions.dart';
 import '../../../../core/shared/ConfigReader.dart';
 import '../../../../main.dart';
@@ -25,12 +26,12 @@ class _SignUpState extends State<SignUp> {
   final confPassController = TextEditingController();
   final fullNameController = TextEditingController();
   bool showPassword = false;
-  bool showPassword2 = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFFF3F3F3),
+        // backgroundColor: const Color(0xFFF3F3F3),
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Center(
@@ -46,7 +47,6 @@ class _SignUpState extends State<SignUp> {
                           'Sign',
                           style: GoogleFonts.lato(
                             fontWeight: FontWeight.w700,
-                            color: Colors.black,
                             fontSize: 40,
                           ),
                         ),
@@ -66,7 +66,6 @@ class _SignUpState extends State<SignUp> {
                       'Provide your information to continue!',
                       style: GoogleFonts.lato(
                         fontWeight: FontWeight.w400,
-                        color: Colors.black54,
                         fontSize: 20,
                       ),
                     ),
@@ -189,68 +188,79 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> proceed(AppConfig config, BuildContext context) async {
-    Response result = await post(
-      Uri.parse(config.registerUrl!),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': '*/*',
-      },
-      body: jsonEncode({
-        "email": emailController.text.trim(),
-        "fullName": fullNameController.text.trim(),
-        "password": passwordController.text.trim(),
-        "phone": phoneController.text.trim(),
-      }),
-    );
-    await FlutterSecureStorage().write(
-      key: "phoneNumber",
-      value: phoneController.text.trim(),
-    );
-    print('StatusCode: ${result.statusCode}');
-    if (result.statusCode >= 200 && result.statusCode < 300) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'You have successfully created your account!',
-            style: GoogleFonts.raleway(
-              fontSize: 16,
-              color: Colors.black,
+    try {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const ProgressDialog(displayMessage: '⏳ Creating your account. Please wait...');
+        },
+      );
+      // isLoading = true;
+      Response result = await post(
+        Uri.parse(config.registerUrl!),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': '*/*',
+        },
+        body: jsonEncode({
+          "email": emailController.text.trim(),
+          "fullName": fullNameController.text.trim(),
+          "password": passwordController.text.trim(),
+          "phone": phoneController.text.trim(),
+        }),
+      );
+      await FlutterSecureStorage().write(
+        key: "phoneNumber",
+        value: phoneController.text.trim(),
+      );
+      print('StatusCode: ${result.statusCode}');
+      if (result.statusCode >= 200 && result.statusCode < 300) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'You have successfully created your account!',
+              style: GoogleFonts.raleway(
+                fontSize: 16,
+                color: Colors.black,
+              ),
             ),
+            backgroundColor: Colors.teal[200],
           ),
-          backgroundColor: Colors.teal[200],
-        ),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Index(),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '😥${result.statusCode} Something wrong occured!',
-            style: GoogleFonts.raleway(
-              fontSize: 16,
-              color: Colors.black,
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Index(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '😥${result.statusCode} Something wrong occured!',
+              style: GoogleFonts.raleway(
+                fontSize: 16,
+                color: Colors.black,
+              ),
             ),
+            backgroundColor: Colors.red[300],
           ),
-          backgroundColor: Colors.red[300],
-        ),
-      );
+        );
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
   Padding passwordTextField(
     TextEditingController controller, {
     String? label,
-    bool? show,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 1.5, left: 5, right: 5, bottom: 7.5),
       child: TextFormField(
-        obscureText: showPassword,
+        obscureText: showPassword == false ? true : false,
         controller: controller,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
@@ -262,10 +272,9 @@ class _SignUpState extends State<SignUp> {
             onPressed: () {
               setState(() {
                 showPassword = !showPassword;
-                showPassword2 = !showPassword2;
               });
             },
-            icon: showPassword == true
+            icon: showPassword == false
                 ? Icon(
                     Icons.remove_red_eye,
                     color: Colors.teal[400],

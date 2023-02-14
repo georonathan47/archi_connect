@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/components/colors.dart';
 import '../../../../core/components/widgetFunctions.dart';
+import '../../../../core/utils/apiMediator.dart';
 import '../widgets/DesignList.dart';
 
 class Designs extends StatefulWidget {
@@ -12,7 +13,34 @@ class Designs extends StatefulWidget {
   State<Designs> createState() => _DesignsState();
 }
 
+dynamic designs;
+
 class _DesignsState extends State<Designs> {
+  tryFetch() async {
+    try {
+      ApiMediator().fetchAllDesigns().then((value) {
+        setState(() {
+          designs = value;
+        });
+        debugPrint(designs.toString());
+      });
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    tryFetch();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tryFetch();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +63,7 @@ class _DesignsState extends State<Designs> {
               ),
             ),
             const Divider(thickness: .45, color: Colors.black54),
-            DesignList(),
+            designs == null ? Center(child: CircularProgressIndicator()) : designList(designs),
           ],
         ),
       ),

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:archi_connect/core/components/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:archi_connect/core/components/widgetFunctions.dart';
+
+import '../../../../core/components/colors.dart';
+import '../../../../core/components/widgetFunctions.dart';
 
 class DesignDetail extends StatefulWidget {
   final String name;
   final String image;
   final String description;
+  final String location;
   const DesignDetail({
     Key? key,
     required this.name,
     required this.image,
     required this.description,
+    required this.location,
   }) : super(key: key);
 
   @override
@@ -48,6 +51,7 @@ class _DesignDetailState extends State<DesignDetail> {
           children: [
             Container(
               height: 250,
+              width: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -61,11 +65,16 @@ class _DesignDetailState extends State<DesignDetail> {
                   ),
                 ],
               ),
-              child: Image.asset(widget.image),
+              child: Image.network(
+                widget.image,
+                fit: BoxFit.cover,
+                colorBlendMode: BlendMode.darken,
+                filterQuality: FilterQuality.high,
+              ),
             ),
             addVertical(20),
             Text(
-              widget.name,
+              '${widget.name} at ${widget.location}',
               style: GoogleFonts.lato(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -74,6 +83,7 @@ class _DesignDetailState extends State<DesignDetail> {
             ),
             addVertical(20),
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),

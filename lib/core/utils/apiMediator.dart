@@ -19,10 +19,11 @@ class ApiMediator {
     );
     if (userDetailsResponse.statusCode == 200) {
       print(jsonDecode(userDetailsResponse.body));
-      var userDetails = jsonDecode(userDetailsResponse.body) as Map<String, dynamic>;
+      var userDetails = jsonDecode(userDetailsResponse.body);
       return userDetails;
     } else {
       print(userDetailsResponse.statusCode);
+      return null;
     }
   }
 
@@ -34,10 +35,26 @@ class ApiMediator {
     );
     if (architectResponse.statusCode == 200) {
       print(jsonDecode(architectResponse.body));
-      var architectDetails = jsonDecode(architectResponse.body) as List<dynamic>;
+      var architectDetails = jsonDecode(architectResponse.body);
       return architectDetails;
     } else {
       print(architectResponse.statusCode);
+      return null;
+    }
+  }
+
+  fetchAllDesigns() async {
+    final config = await AppConfig.forEnvironment(envVar);
+    Response designResponse = await get(
+      Uri.parse(config.fetchAllDesignsUrl!),
+      headers: headers,
+    );
+    if (designResponse.statusCode == 200) {
+      print(jsonDecode(designResponse.body));
+      var designDetails = jsonDecode(designResponse.body);
+      return designDetails;
+    } else {
+      print(designResponse.statusCode);
       return null;
     }
   }
